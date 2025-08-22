@@ -1,0 +1,286 @@
+---
+title: "Exercise2"
+author: "Shoyombo Moshood Olanrewaju"
+date: "2024-12-25"
+output: html_document
+---
+
+Problem 1: City Data Analysis
+    • Create a vector containing the populations (in millions) of 5 different cities: c(1.5, 2.3, 5.2, 6.8, 4.0).
+    • Write a function that categorizes each city as "Small" (< 2 million), "Medium" (2 to 5 million), or "Large" (> 5 million).
+    • Display the original populations and their categories side by side.
+    • Challenge: Find the average population of cities categorized as "Medium".
+```{r}
+populations <- c(1.5, 2.3, 5.2, 6.8, 4.0)
+
+categorizes_populations <- function(x){
+  if(x < 2){
+    return("Small")
+  }else if(x < 5){
+    return("Medium")
+  }else{
+    return("Large")
+  }
+}
+sapply(populations, categorizes_populations)
+```
+```{r}
+population_classes <- data.frame(Populaton = populations, Classes = sapply(populations, categorizes_populations))
+```
+```{r}
+mean(population_classes$Populaton[population_classes$Classes == "Medium"])
+```
+
+Problem 2: Temperature Data Transformation
+    • You have a vector of daily temperature readings in Celsius: c(28, 31, 25, 29, 30, 26, 27).
+    • Write a function to convert these temperatures to Fahrenheit and another function to categorize them as "Cool" (below 20°C), "Warm" (20°C to 30°C), and "Hot" (above 30°C) based on the original Celsius values.
+    • Challenge: Find how many days were categorized as "Warm" and display the average temperature of those days in Fahrenheit.
+```{r}
+daily_temperature <- c(28, 31, 25, 29, 30, 26, 27)
+Celcius_to_Fahrenheit <- function(x){
+  return(x * 9/5 + 32)
+}
+Celcius_to_Fahrenheit(daily_temperature)
+```
+```{r}
+categorize_temperature <- function(x){
+  if(x < 20){
+    return("Cool")
+  }else if(x < 30){
+    return("Warm")
+  }else{
+    return("Hot")
+  }
+}
+sapply(daily_temperature, categorize_temperature)
+```
+
+Find how many days were categorized as "Warm" and display the average temperature of those days in Fahrenheit.
+```{r}
+temperatures_category <- data.frame(Celcius = daily_temperature, 
+                                    Fahrenheit = Celcius_to_Fahrenheit(daily_temperature), 
+                                    Category = sapply(daily_temperature, categorize_temperature))
+```
+
+```{r}
+length(which(temperatures_category$Category == "Warm"))
+length(temperatures_category$Celcius[temperatures_category$Category == "Warm"])
+```
+```{r}
+mean(temperatures_category$Fahrenheit[temperatures_category$Category == "Warm"])
+```
+
+
+Problem 3: Subsetting and Modifying Data
+    • Create a vector of students' heights (in cm): c(160, 172, 155, 180, 165, 170, 158).
+    • Extract the heights that are above the average height.
+    • Write a function that modifies the vector so that heights below 160 cm are set to 160 cm.
+    • Calculate the mean height after modification and compare it with the original mean height.
+    • Challenge: Determine how many students have a height above the new average.
+```{r}
+student_heights <- c(160, 172, 155, 180, 165, 170, 158)
+student_heights[student_heights > mean(student_heights)]
+```
+```{r}
+modify_vector <- function(x){
+  ifelse(x<160, 160, x)
+}
+modify_vector(student_heights)
+```
+```{r}
+mean(student_heights)
+mean(modify_vector(student_heights))
+```
+```{r}
+length(student_heights[student_heights > mean(modify_vector(student_heights))])
+```
+    
+Problem 4: Date Analysis Using lubridate
+    • Create a vector of dates representing birthdays: c("1990-05-15", "1985-08-23", "2000-12-01", "1995-03-10", "1989-11-30").
+    • Convert these strings into date objects using lubridate.
+    • Write a function that calculates each person’s age in years.
+    • Challenge: Find out how many people are over 30 years old as of today.
+```{r}
+library(lubridate)
+birthdays <- c("1990-05-15", "1985-08-23", "2000-12-01", "1995-03-10", "1989-11-30")
+ymd(birthdays)
+```
+```{r}
+age_function <- function(x){
+  return(year(today()) - year(ymd(x)))
+}
+age_function(birthdays)
+```
+```{r}
+length(which(age_function(birthdays) > 30))
+```
+
+Problem 5: String Manipulation and Analysis
+    • Create a vector of book titles: c("The Great Gatsby", "1984", "To Kill a Mockingbird", "Brave New World", "The Catcher in the Rye").
+    • Write a function that extracts the number of words in each book title.
+    • Find the average number of words per title.
+    • Challenge: Write a function that checks if a title contains the word "The" (case-insensitive) and returns only those titles.
+```{r}
+library(stringr)
+```
+    
+```{r}
+book_titles <- c("The Great Gatsby", "1984", "To Kill a Mockingbird", "Brave New World", "The Catcher in the Rye")
+extract_words <- function(words){ res = c()
+  for(item in words){
+    ab = str_extract_all(item,'[A-z]+')[[1]]
+    res = c(res, ab)
+  }
+return(length(res))
+}
+extract_words(book_titles)
+```
+```{r}
+extract_words(book_titles)/length(book_titles)
+```
+```{r}
+check_the <- function(title){
+  return(title[str_detect(title,'The')])
+}
+check_the(book_titles)
+```
+
+Problem 6: Income Normalization and Analysis
+    • Create a vector of annual incomes (in thousands): c(40, 65, 55, 70, 85, 45, 100).
+    • Normalize the income values between 0 and 1.
+    • Write a function that categorizes these normalized incomes as "Low", "Medium", and "High".
+    • Challenge: Calculate the percentage of incomes that fall into each category.
+```{r}
+annual_incomes <- c(40, 65, 55, 70, 85, 45, 100)
+normalize_income <- function(x){
+  return((x - min(x)) / (max(x) - min(x)))
+}
+normalize_income(annual_incomes)
+```
+```{r}
+classify_income <- function(x){
+  if(x < 0.4){
+    return("Low")
+  }else if(x<0.6){
+    return("Medium")
+  }else{
+    return("High")
+  }
+}
+categories_income <- sapply(normalize_income(annual_incomes), classify_income)
+categories_income
+```
+```{r}
+category <- c('Low', 'Medium', 'High')
+percent_category <- function(category){ res = c()
+  for(item in category){
+    res = c(res, length(categories_income[categories_income == item])/length(categories_income) *100)
+  }
+return(res)
+}
+percent_category(category)  
+data.frame(Category = category, Percentage = percent_category(category))
+```
+    
+Problem 7: Working with Timestamps
+    • Create a vector of strings representing the times of meetings: c("09:00", "13:30", "08:45", "11:15", "15:00").
+    • Convert these strings into time objects using lubridate.
+    • Write a function to determine how many meetings occur before noon.
+    • Challenge: Find the earliest and latest meeting times and the time difference between them.
+```{r}
+time_meeting <- c("09:00", "13:30", "08:45", "11:15", "15:00")
+hm(time_meeting)
+after_noon <- function(time){
+  return(length(time[hour(time)>12]))
+}
+after_noon(hm(time_meeting))
+```
+```{r}
+hm(min(time_meeting))
+hm(max(time_meeting))
+hm(max(time_meeting)) - hm(min(time_meeting))
+```
+
+Problem 8: Analyzing Rainfall Data
+    • Create a vector representing monthly rainfall (in mm) for a year: c(78, 120, 95, 60, 45, 20, 15, 25, 55, 90, 110, 130).
+    • Write a function that calculates the total rainfall for the year and identifies the wettest month.
+    • Challenge: Write another function that determines the average rainfall per month for the first half (Jan-Jun) and the second half (Jul-Dec) of the year, and find out which half had more rainfall.
+```{r}
+monthly_rainfall <- c(78, 120, 95, 60, 45, 20, 15, 25, 55, 90, 110, 130)
+rainfall_data <- function(monthly_rainfall){
+  tab <- data.frame(Summary = c("Total rainfall", "Wettest month"), 
+                    Values = c(sum(monthly_rainfall), which.max(monthly_rainfall)))
+  return(tab)
+}
+rainfall_data(monthly_rainfall)
+```
+```{r}
+average_rainfall <- function(monthly_rainfall){
+  tab <- data.frame(Months = c("Jan-Jun", "Jul-Dec"), 
+                    Average = c(sum(monthly_rainfall[1:6])/6, sum(monthly_rainfall[7:12])/6))
+  return(tab)
+}
+average_rainfall(monthly_rainfall)
+```
+Problem 9: Data Transformation and Filtering
+    • Create a vector of test scores: c(56, 72, 88, 45, 95, 78, 66, 82, 59).
+    • Write a function that converts the scores into grades: "A" (85-100), "B" (70-84), "C" (60-69), "D" (50-59), "F" (<50).
+    • Display the grades alongside their corresponding scores.
+    • Challenge: Find out how many students scored a "B" or higher.
+```{r}
+test_scores <- c(56, 72, 88, 45, 95, 78, 66, 82, 59)
+scores_into_grades <- function(scores){
+  if(scores >= 85){
+    return("A")
+  }else if(scores >= 70){
+    return("B")
+  }else if(scores >= 60){
+    return("C")
+  }else if(scores >= 50){
+    return("D")
+  }else{
+    return("F")
+  }
+}
+sapply(test_scores, scores_into_grades)
+```
+```{r}
+data.frame(Scores = test_scores, Grades = sapply(test_scores, scores_into_grades))
+```
+```{r}
+length(which(test_scores >= 70))
+```
+
+Problem 10: Vector Operations and Data Summary
+    • Create a vector of weekly sales numbers (in units): c(150, 200, 175, 225, 180, 190, 210).
+    • Write a function that identifies weeks where sales were above the average.
+    • Calculate the percentage increase or decrease in sales compared to the previous week for each week.
+    • Challenge: Determine which week had the highest percentage increase in sales compared to the previous week.
+```{r}
+weekly_sales <- c(150, 200, 175, 225, 180, 190, 210)
+weekly_sales_above_average <- function(weekly_sales){
+  return(which(weekly_sales > mean(weekly_sales)))
+}
+weekly_sales_above_average(weekly_sales)
+```
+    
+```{r}
+percentage_changes <- function(sales){ percent_change = c()
+  for(i in 2:length(sales)){
+    changes = (sales[i] - sales[i-1])/sales[i-1] * 100
+    percent_change = c(percent_change, changes)
+  }
+  tab = data.frame("Weekly sales" = weekly_sales, "Percentage Changes" = c(NA, percent_change))
+return(tab)
+}
+changes_tab <- percentage_changes(weekly_sales)
+changes_tab
+```
+```{r}
+which.max(changes_tab$Percentage.Changes)
+```
+    
+    
+    
+    
+    
