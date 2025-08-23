@@ -1,0 +1,211 @@
+---
+title: "Exercise3"
+author: "Shoyombo Moshood Olanrewaju"
+date: "2024-12-25"
+output: html_document
+---
+
+Problem 1: City Populations
+    • Given a vector of city populations (in millions): 1.8, 2.5, 5.3, 7.6, 4.2, 2.9, 3.1, 6.8.
+    • Write a function to calculate the standard deviation of the populations.
+    • Identify the cities that have populations more than one standard deviation above or below the average population.
+    • Output: A list of the cities that fall into these categories.
+```{r}
+city_populations <- c(1.8, 2.5, 5.3, 7.6, 4.2, 2.9, 3.1, 6.8)
+analysis_on_population <- function(populations){
+  stand_dev <- sd(populations)
+  average_p <- mean(populations)
+  return(c(populations[which(populations > average_p + stand_dev)], populations[which(populations < average_p + stand_dev)]))
+}
+analysis_on_population(city_populations)
+```
+    
+Problem 2: Weekly Temperature
+    • Given daily temperature readings (in Celsius) for a week: 25, 28, 30, 32, 27, 26, 29.
+    • Write a function to find the number of days where the temperature was above the average temperature for the week.
+    • Find the highest temperature recorded and check if there is any day where the temperature was more than 5 degrees below this highest temperature.
+    • Output: The count of days above average and any temperatures that meet the condition.
+```{r}
+daily_temperature <- c(25, 28, 30, 32, 27, 26, 29)
+temperature_above_average <- function(temp){
+  return(temp[temp > mean(temp)])
+}
+temperature_above_average(daily_temperature)
+```
+```{r}
+max(daily_temperature)
+daily_temperature[daily_temperature > (max(daily_temperature)-5)]
+```
+```{r}
+(days <- which(daily_temperature > mean(daily_temperature)))
+daily_temperature[days]
+```
+
+Problem 3: Product Ratings
+    • Given product ratings (out of 5) from 20 customers: 2.5, 3.8, 4.5, 3.0, 4.0, 2.7, 4.9, 3.2, 4.1, 2.6, 4.3, 3.4, 3.9, 4.7, 3.1, 2.8, 4.0, 3.6, 4.8, 3.5.
+    • Write a function to find the average of the top 20% of ratings.
+    • Replace ratings below 3 with the label "Low" and ratings above 4.5 with "High". Keep the rest as is.
+    • Output: The average of the top 20% ratings and the updated list with labels.
+```{r}
+product_ratings <- c(2.5, 3.8, 4.5, 3.0, 4.0, 2.7, 4.9, 3.2, 4.1, 2.6, 4.3, 3.4, 3.9, 4.7, 3.1, 2.8, 4.0, 3.6, 4.8, 3.5)
+average_of_top <- function(ratings){
+  n = length(ratings)
+  m = 0.8*n
+  return(mean(sort(ratings)[m:n]))
+}
+average_of_top(product_ratings)
+
+```
+```{r}
+category_ratings <- function(x){
+  if(x < 3){
+    return("Low")
+  }else if(x > 4.5){
+    return("High")
+  }else{
+    return(x)
+  }
+}
+sapply(product_ratings, category_ratings)
+```
+
+Problem 5: Sentence Word Count
+    • Given a list of 10 sentences about different products, count the number of words in each sentence.
+    • Find the sentence with the most words and the one with the fewest.
+    • Output: Word counts for each sentence, including the longest sentence and the shortest sentence.
+```{r}
+library(stringr)
+```
+    
+```{r}
+words <- c("Add the calculated days together", "to the given date", "to get ", "the next Monday", "Given a list",
+           "Word counts for each sentence", "object with the specified number", "And Create a sequence of dates")
+sentence_word_count <- function(words){ counts <- c()
+  for(word in words){
+    val = str_count(word, "[A-z]+")
+    counts = c(counts, val)
+  }
+  tab <- data.frame(sentence = words, "word counts" = counts)
+  return(tab)
+}
+(the_table <- sentence_word_count(words))
+```
+```{r}
+the_table$sentence[max(the_table$word.counts)]
+the_table$sentence[min(the_table$word.counts)]
+```
+
+Problem 6: Income Analysis
+    • Given monthly incomes (in thousands): 45, 60, 55, 72, 80, 39, 91, 52, 47, 68, 76, 85, 49, 94, 56, 62, 78, 41, 87, 99.
+    • Normalize the incomes using Z-score normalization.
+    • List all incomes with a Z-score greater than 1 and calculate the median of those with a Z-score less than -1.
+    • Output: Incomes with Z-scores above 1 and the median of those with Z-scores below -1.
+```{r}
+monthly_incomes <- c(45, 60, 55, 72, 80, 39, 91, 52, 47, 68, 76, 85, 49, 94, 56, 62, 78, 41, 87, 99)
+Z_normalization <- function(score){
+  mn <- mean(score)
+  stand_dev <- sd(score)
+  return((score - mn)/stand_dev)
+}
+(normalised_income <- Z_normalization(monthly_incomes))
+```
+```{r}
+normalised_income[normalised_income > 1]
+median(normalised_income[normalised_income < -1])
+```
+
+Problem 7: Sales Data Analysis
+    • You have hourly sales data for a day: 15, 20, 25, 18, 22, 30, 28, 35, 40, 38, 45, 50, 55, 60, 65, 70, 62, 58, 55, 48, 42, 37, 32, 29.
+    • Write a function that calculates total sales during the morning (6 AM - 11 AM), afternoon (12 PM - 5 PM), evening (6 PM - 9 PM), and night (10 PM - 5 AM).
+    • Identify the time period with the highest sales.
+    • Output: Total sales for each period and the period with the highest sales.
+```{r}
+hourly_sales <- c(15, 20, 25, 18, 22, 30, 28, 35, 40, 38, 45, 50, 55, 60, 65, 70, 62, 58, 55, 48, 42, 37, 32, 29)
+categorising_sales <- function(sales){
+  tab <- data.frame("time period" = c("morning","afternoon","evening","night"),
+                    "total sales" = c(sum(hourly_sales[1:6]), sum(hourly_sales[7:12]), 
+                                      sum(hourly_sales[13:16]), sum(hourly_sales[17:24])))
+  return(tab)
+}
+(perodic_sales <- categorising_sales(hourly_sales))
+```
+```{r}
+perodic_sales$time.period[which(perodic_sales$total.sales == max(perodic_sales$total.sales))]
+```
+
+Problem 8: Rainfall Analysis
+    • Given monthly rainfall data (in mm): 78, 120, 95, 60, 45, 20, 15, 25, 55, 90, 110, 130.
+    • Write a function to find the total rainfall for the first half of the year (January to June) and the second half (July to December).
+    • Determine which half had a higher average rainfall.
+    • Output: Total rainfall for each half and which half had the higher average.
+```{r}
+monthly_rainfall <- c(78, 120, 95, 60, 45, 20, 15, 25, 55, 90, 110, 130)
+total_rainfall <- function(rainfall){
+  tab <- data.frame(Halfs = c("January to June", "July to December"), 
+                    "Total rainfall" = c(sum(rainfall[1:6]), sum(rainfall[7:12])))
+  return(tab)
+}
+(sum_half <- total_rainfall(monthly_rainfall))
+```
+```{r}
+sum_half$Halfs[which(sum_half$Total.rainfall == max(sum_half$Total.rainfall))]
+```
+
+Problem 9: Exam Scores Analysis
+    • Given exam scores (out of 100) for 40 students: 56, 72, 88, 45, 95, 78, 66, 82, 59, 91, 77, 85, 67, 81, 73, 69, 76, 54, 92, 61, 83, 74, 90, 58, 87, 68, 80, 60, 79, 96, 75, 84, 62, 89, 70, 57, 93, 71, 65, 64.
+    • Adjust all scores so that the highest score becomes 100, scaling all other scores proportionally.
+    • Count how many students scored 85 or above after the adjustment.
+    • Output: Adjusted scores and the count of students with scores of 85 or higher.
+```{r}
+exam_scores <- c(56, 72, 88, 45, 95, 78, 66, 82, 59, 91, 77, 85, 67, 81, 73, 69, 76, 54, 92, 61, 83, 74, 90, 
+                 58, 87, 68, 80, 60, 79, 96, 75, 84, 62, 89, 70, 57, 93, 71, 65, 64)
+adjusted_score <- function(exam){
+  adds <- 100 - max(exam)
+  return(exam + adds)
+}
+(adjusted_exam_score <- adjusted_score(exam_scores))
+```
+```{r}
+sum(adjusted_exam_score > 85)
+```
+
+Problem 10: Rolling Averages
+    • Weekly sales data (in units) for 52 weeks: 150, 180, 175, 200, 210, 220, 190, 205, 195, 180, 185, 200, 195, 210, 220, 225, 230, 240, 250, 260, 270, 265, 275, 280, 290, 295, 300, 305, 310, 320, 325, 330, 335, 340, 350, 355, 360, 365, 370, 375, 380, 385, 390, 395, 400, 405, 410, 415, 420, 425, 430, 435.
+    • Calculate a 4-week rolling average for the sales data.
+    • Find the week where the rolling average increased the most compared to the previous week.
+    • Output: 4-week rolling averages and the week with the largest increase.
+
+```{r}
+Weekly_sales <- c(150, 180, 175, 200, 210, 220, 190, 205, 195, 180, 185, 200, 195, 210, 220, 
+                  225, 230, 240, 250, 260, 270, 265, 275, 280, 290, 295, 300, 305, 310, 320, 
+                  325, 330, 335, 340, 350, 355, 360, 365, 370, 375, 380, 385, 390, 395, 400, 
+                  405, 410, 415, 420, 425, 430, 435)
+four_week_average <- function(sales){
+  res <- c()
+  n <- seq(from = 1, to = length(sales), by = 4)
+  for(i in n){
+    weekly_sum <- sum(sales[i:(3+i)])
+    res <- c(res,weekly_sum)
+  }
+  return(res)
+}
+(weekly <- four_week_average(Weekly_sales))
+```
+
+```{r}
+four_weekly_increase <- function(weekly){
+  res <- c(0)
+  for(i in 2:length(weekly)){
+    dif <- weekly[i] - weekly[i-1]
+    res <- c(res, dif)
+  }
+  return(res)
+}
+(week_diff <- four_weekly_increase(weekly))
+```
+```{r}
+which(week_diff == max(week_diff))
+```
+
+
+
