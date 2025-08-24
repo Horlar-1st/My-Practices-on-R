@@ -15,12 +15,11 @@ This repository serves as a record of my progress in learning R and a resource f
 ## Technologies Used
 * R
 * RStudio
-* Various R packages (e.g., dplyr, ggplot2, tidyr)
+* Various R packages (e.g., stringr, ggplot2, tidyr)
 
 ## How to Use
 1. Clone the repository: `git clone https://github.com/your-username/R-Practice.git`
 2. Explore the different folders and files to see various R scripts and projects.
 3. Feel free to suggest improvements or provide feedback on my code.
 
-## Contact
-If you have any questions or would like to collaborate on a project, please reach out to me at [your-email@example.com](mailto:your-email@example.com).
+
