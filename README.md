@@ -15,7 +15,7 @@ This repository serves as a record of my progress in learning R and a resource f
 ## Technologies Used
 * R
 * RStudio
-* Various R packages (e.g., stringr, ggplot2, tidyr)
+* Various R packages (e.g., stringr, lubridate, ggplot2, tidyr)
 
 ## How to Use
 1. Clone the repository: `git clone https://github.com/your-username/R-Practice.git`
